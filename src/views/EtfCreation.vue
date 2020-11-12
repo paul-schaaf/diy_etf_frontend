@@ -33,17 +33,29 @@
           min="1"
         />
       </div>
-      <div v-for="(token, index) in tokens" :key="index">
-        <label :for="'token' + (index + 1)">Token {{ index + 1 }} </label>
-        <input type="text" :name="'token' + (index + 1)" v-model="token.name" />
-        <label :for="'token' + (index + 1) + 'percentage'"> Percentage </label>
-        <input
-          v-model.number="token.percentage"
-          :name="'token' + (index + 1) + 'percentage'"
-          onkeyup="if(this.value<0){this.value= this.value * -1}"
-          type="number"
-          min="1"
-        />
+      <div
+        v-for="(token, index) in tokens"
+        :key="index"
+        class="token-form-field"
+      >
+        <div class="token-address-form-field">
+          <label :for="'token' + (index + 1)">Token {{ index + 1 }} </label>
+          <input
+            type="text"
+            :name="'token' + (index + 1)"
+            v-model="token.name"
+          />
+        </div>
+        <div class="token-percentage-form-field">
+          <label :for="'token' + (index + 1) + 'percentage'">%</label>
+          <input
+            v-model.number="token.percentage"
+            :name="'token' + (index + 1) + 'percentage'"
+            onkeyup="if(this.value<0){this.value= this.value * -1}"
+            type="number"
+            min="1"
+          />
+        </div>
       </div>
       <div id="etf-creation-form-submit-container">
         <div id="gradient-wrapper">
@@ -171,6 +183,22 @@ export default defineComponent({
     label {
       padding-left: 3px;
       font-size: 16px;
+      display: block;
+    }
+
+    .token-form-field {
+      display: flex;
+      justify-content: space-between;
+      margin: 0;
+      .token-address-form-field {
+        width: 84%;
+        margin: 0;
+      }
+
+      .token-percentage-form-field {
+        width: 15%;
+        margin: 0%;
+      }
     }
 
     input {
