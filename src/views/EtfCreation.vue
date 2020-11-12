@@ -1,13 +1,5 @@
 <template>
   <div id="etf-creation-container">
-    <div id="etf-creation-heading">
-      <span id="d">d</span>
-      <span id="i">i</span>
-      <span id="y">y </span>
-      <span id="e">e</span>
-      <span id="t">t</span>
-      <span id="f">f</span>
-    </div>
     <div v-if="etfAddress" id="etf-creation-success-msg">
       ETF successfully created! Here's the address of the ETF you've created:
       {{ etfAddress }}
@@ -138,40 +130,6 @@ export default defineComponent({
     width: 450px;
     padding: 0px 10px 0px 10px;
     margin-top: 50px;
-  }
-
-  #etf-creation-heading {
-    font-size: 60px;
-    transform: rotate(-10deg);
-    margin-top: 60px;
-
-    span {
-      font-family: "Roboto Slab", serif;
-    }
-
-    #d {
-      color: #de0000;
-    }
-
-    #i {
-      color: #de6b00;
-    }
-
-    #y {
-      color: #e5cf5b;
-    }
-
-    #e {
-      color: #87e55b;
-    }
-
-    #t {
-      color: #5be5dd;
-    }
-
-    #f {
-      color: #5b82e5;
-    }
   }
 
   #etf-creation-form {
