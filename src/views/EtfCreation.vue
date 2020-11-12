@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="feePayer">Fee payer </label>
-    <input type="text" name="feePayer" />
+    <input v-model="feePayerSecret" type="text" name="feePayer" />
   </div>
   <div>
     <label for="shareValue">ETF share value (nondivisible) in usd </label>
@@ -14,50 +14,45 @@
     <input
       type="number"
       :name="'token' + (index + 1) + 'percentage'"
-      v-model="token.percentage"
+      onkeyup="if(this.value<0){this.value= this.value * -1}"
+      v-model.number="token.percentage"
     />
   </div>
   <div>
-    <input type="submit" @click="createETF" />
+    <input :disabled="!percentageSum100" type="submit" @click="onCreateEtf" />
   </div>
-  <div v-for="amount in formattedVaultAccounts">{{ amount }}</div>
 </template>
 <script lang="ts">
 import { computed, defineComponent, reactive, ref } from "vue";
-import { getTokenPricesInUSD } from "@/utils/tokenPriceApi";
-import {
-  convertPriceToSmallestUnit,
-  EtfComponent,
-  createVaultAmounts
-} from "@/utils/tokens";
-import BN from "bn.js";
+import { EtfComponent } from "@/utils/etf";
+import { createEtf } from "@/utils/createEtf";
 
 export default defineComponent({
   name: "EtfCreation",
   setup() {
     const shareValueInUsd = ref(0);
+    const feePayerSecret = ref("");
 
     const tokens = reactive<EtfComponent[]>([
       { name: "SRM", percentage: 50 },
       { name: "SOL", percentage: 50 }
     ]);
 
-    const serumPrice = ref<null | number[]>(null);
+    const percentageSum100 = computed(
+      () => tokens.reduce((acc, c) => acc + c.percentage, 0) === 100
+    );
 
-    const vaultAmounts = reactive<{ amounts: BN[] }>({ amounts: [] });
-
-    const createETF = async () => {
-      vaultAmounts.amounts = await createVaultAmounts(
-        tokens,
-        shareValueInUsd.value
-      );
+    const onCreateEtf = async () => {
+      await createEtf(tokens, shareValueInUsd.value, feePayerSecret.value);
     };
 
-    const mapBNtoArray = (bn: BN) => bn.toArray("le", 8);
-
-    const formattedVaultAccounts = computed(() => vaultAmounts.amounts.map(mapBNtoArray));
-
-    return { shareValueInUsd, serumPrice, createETF, tokens, vaultAmounts, formattedVaultAccounts };
+    return {
+      shareValueInUsd,
+      onCreateEtf,
+      tokens,
+      percentageSum100,
+      feePayerSecret
+    };
   }
 });
 </script>
