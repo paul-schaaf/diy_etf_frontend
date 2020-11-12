@@ -13,3 +13,24 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss">
+:root {
+  --main-grey: #464646;
+  --bg-grey: #f3f3f3;
+  --border-radius: 10px;
+}
+
+html,
+body {
+  background: var(--bg-grey);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Sansita", sans-serif;
+  color: var(--main-grey);
+}
+</style>
