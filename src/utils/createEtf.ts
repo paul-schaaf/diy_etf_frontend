@@ -149,4 +149,6 @@ export const createEtf = async (
     feePayerAccount,
     poolAccount
   );
+
+  return poolAccount.publicKey.toBase58();
 };

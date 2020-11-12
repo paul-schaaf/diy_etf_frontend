@@ -8,10 +8,20 @@
       <span id="t">t</span>
       <span id="f">f</span>
     </div>
+    <div v-if="etfAddress" id="etf-creation-success-msg">
+      ETF successfully created! Here's the address of the ETF you've created:
+      {{ etfAddress }}
+      Save it because you'll need it to create and redeem ETF shares.
+    </div>
     <div id="etf-creation-form">
       <div>
         <label for="feePayer">Fee payer </label>
-        <input v-model="feePayerSecret" type="text" name="feePayer" placeholder="your seed phrase..." />
+        <input
+          v-model="feePayerSecret"
+          type="text"
+          name="feePayer"
+          placeholder="your seed phrase..."
+        />
       </div>
       <div>
         <label for="shareValue">ETF share value (nondivisible) in usd </label>
@@ -60,6 +70,7 @@ export default defineComponent({
   setup() {
     const shareValueInUsd = ref(0);
     const feePayerSecret = ref("");
+    const etfAddress = ref("");
 
     const tokens = reactive<EtfComponent[]>([
       { name: "SRM", percentage: 50 },
@@ -72,12 +83,22 @@ export default defineComponent({
 
     const isCreatingEtf = ref(false);
     const onCreateEtf = async () => {
+      if (!shareValueInUsd.value) {
+        alert("Share value must not be 0");
+        return;
+      }
+      etfAddress.value = "";
       isCreatingEtf.value = true;
       try {
-        await createEtf(tokens, shareValueInUsd.value, feePayerSecret.value);
+        etfAddress.value = await createEtf(
+          tokens,
+          shareValueInUsd.value,
+          feePayerSecret.value
+        );
       } catch (err) {
         alert(err);
       }
+      window.scrollTo(0, 0);
       isCreatingEtf.value = false;
     };
 
@@ -87,7 +108,8 @@ export default defineComponent({
       tokens,
       percentageSum100,
       feePayerSecret,
-      isCreatingEtf
+      isCreatingEtf,
+      etfAddress
     };
   }
 });
@@ -98,6 +120,13 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  #etf-creation-success-msg {
+    text-align: center;
+    width: 450px;
+    padding: 0px 10px 0px 10px;
+    margin-top: 50px;
+  }
 
   #etf-creation-heading {
     font-size: 60px;
@@ -151,7 +180,7 @@ export default defineComponent({
       border-radius: var(--border-radius);
       border: 1px solid var(--main-grey);
       background: var(--light-grey);
-      margin: 5px 0 20px 10px;
+      margin: 5px 0px 20px 0px;
       padding: 0 10px 2px 10px;
     }
 
@@ -187,7 +216,7 @@ export default defineComponent({
         border: none;
 
         &:disabled {
-          cursor: not-allowed;;
+          cursor: not-allowed;
         }
       }
     }
