@@ -232,7 +232,7 @@ export default defineComponent({
         margin-top: 5px;
         margin-bottom: 25px;
         box-sizing: content-box;
-        padding: 1.5px;
+        padding: 2px;
       }
 
       [type="submit"] {
