@@ -3,10 +3,13 @@
     <div id="home-info">
       <p>Hi! You are visiting diy etf.</p>
 
-      You can use this tool to build your own ETFs on Solana. The ETF program is
-      currently deployed on <span class="cluster-highlight">devnet</span> and
-      you can use this tool to play around with it.
-
+      <p>
+        You can use this tool to build your own ETFs on Solana. The ETF program
+        is currently deployed on
+        <span class="cluster-highlight">devnet</span> and you can use this tool
+        to play around with it.
+      </p>
+      <br />
       <p>
         Go to
         <a
@@ -18,7 +21,11 @@
         >
         and airdrop yourself some SOL on
         <span class="cluster-highlight">devnet</span>. Use those funds to create
-        an ETF, buy, and redeem its shares.
+        an ETF, buy, and redeem its shares. When you buy an etf on devnet, the
+        token's underlying test tokens are created for you and you will receive
+        ETF shares representing the right to them (check your wallet!). When you
+        redeem a share, check your wallet afterwards, the underlying assets will
+        be there!
       </p>
       <br />
       <p>
