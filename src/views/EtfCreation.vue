@@ -64,15 +64,27 @@
           />
         </div>
       </div>
-      <div id="etf-creation-form-submit-container">
-        <div id="gradient-wrapper">
-          <div>
-            <input
-              :disabled="!percentageSum100 || isCreatingEtf"
-              :value="isCreatingEtf ? 'loading...' : 'create etf'"
-              type="submit"
-              @click="onCreateEtf"
-            />
+      <div id="etf-creation-form-button-container">
+        <div
+          v-if="selectedTokens.length > 2"
+          id="etf-creation-form-remove-token"
+          @click="onRemoveToken"
+        >
+          remove token
+        </div>
+        <div id="etf-creation-form-add-token" @click="onAddToken">
+          add token
+        </div>
+        <div id="etf-creation-form-submit-container">
+          <div id="gradient-wrapper">
+            <div>
+              <input
+                :disabled="!isSubmittable || isCreatingEtf"
+                :value="isCreatingEtf ? 'loading...' : 'create etf'"
+                type="submit"
+                @click="onCreateEtf"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -111,8 +123,12 @@ export default defineComponent({
         .map(token => ({ name: token.tokenSymbol, percentage: 50 }));
     };
 
-    const percentageSum100 = computed(
-      () => selectedTokens.reduce((acc, c) => acc + c.percentage, 0) === 100
+    const isSubmittable = computed(
+      () =>
+        feePayerSecret.value &&
+        shareValueInUsd.value > 0 &&
+        selectedTokens.reduce((acc, c) => acc + c.percentage, 0) === 100 &&
+        selectedTokens.every(t => t.percentage > 0)
     );
 
     const isCreatingEtf = ref(false);
@@ -130,10 +146,28 @@ export default defineComponent({
           feePayerSecret.value
         );
       } catch (err) {
+        console.log(err);
         alert(err);
       }
       window.scrollTo(0, 0);
       isCreatingEtf.value = false;
+    };
+
+    const onAddToken = () => {
+      const addableTokens = clusterTokens
+        .filter(clusterToken =>
+          selectedTokens.every(t => {
+            return t.name !== clusterToken.tokenSymbol;
+          })
+        )
+        .map(t => ({ name: t.tokenSymbol, percentage: 0 }));
+      if (addableTokens.length) {
+        selectedTokens.push(addableTokens[0]);
+      }
+    };
+
+    const onRemoveToken = () => {
+      selectedTokens.pop();
     };
 
     return {
@@ -141,10 +175,12 @@ export default defineComponent({
       onCreateEtf,
       selectedTokens,
       getSelectableTokens,
-      percentageSum100,
+      isSubmittable,
       feePayerSecret,
       isCreatingEtf,
-      etfAddress
+      etfAddress,
+      onAddToken,
+      onRemoveToken
     };
   }
 });
@@ -227,6 +263,19 @@ export default defineComponent({
       background: var(--light-grey);
       margin: 5px 0px 20px 0px;
       padding: 0 10px 2px 10px;
+    }
+
+    &-button-container {
+      display: flex;
+      justify-content: space-around;
+      font-size: 18px;
+
+      #etf-creation-form-add-token,
+      #etf-creation-form-remove-token {
+        padding-top: 15px;
+        cursor: pointer;
+        height: 40px;
+      }
     }
 
     &-submit-container {
