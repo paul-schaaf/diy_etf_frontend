@@ -2,7 +2,7 @@
   <div id="etf-creation-container">
     <div v-if="etfAddress" id="etf-creation-success-msg">
       ETF successfully created! Here's the address of the ETF you've created:
-      {{ etfAddress }}
+      <span>{{ etfAddress }}</span>
       Save it because you'll need it to create and redeem ETF shares.
     </div>
     <div id="etf-creation-form">
@@ -130,6 +130,10 @@ export default defineComponent({
     width: 450px;
     padding: 0px 10px 0px 10px;
     margin-top: 50px;
+
+    span {
+      color: var(--blue);
+    }
   }
 
   #etf-creation-form {
