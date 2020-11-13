@@ -21,7 +21,13 @@
           v-model="shareValueInUsd"
           type="number"
           name="shareValue"
-          onkeyup="if(this.value<0){this.value= this.value * -1}"
+          :onkeyup="
+            () => {
+              if (shareValueInUsd < 0) {
+                shareValueInUsd *= -1;
+              }
+            }
+          "
           min="1"
         />
       </div>
@@ -46,7 +52,13 @@
           <input
             v-model.number="token.percentage"
             :name="'token' + (index + 1) + 'percentage'"
-            onkeyup="if(this.value<0){this.value= this.value * -1}"
+            :onkeyup="
+              () => {
+                if (token.percentage < 0) {
+                  token.percentage *= -1;
+                }
+              }
+            "
             type="number"
             min="1"
           />
