@@ -1,6 +1,8 @@
 <template>
   <div id="navbar">
-    <span><router-link to="/">Create</router-link></span>
+    <span><router-link :to="{ name: 'Home' }">Home</router-link></span>
+    |
+    <span><router-link to="/create">Create</router-link></span>
     |
     <span><router-link to="/buy-shares">Buy Shares</router-link></span>
     |
@@ -74,15 +76,15 @@ body {
     }
 
     &:nth-child(2) a.router-link-active {
-      border-bottom: 2px solid var(--yellow);
+      border-bottom: 2px solid var(--orange);
     }
 
     &:nth-child(3) a.router-link-active {
-      border-bottom: 2px solid var(--green);
+      border-bottom: 2px solid var(--yellow);
     }
 
     &:nth-child(4) a.router-link-active {
-      border-bottom: 2px solid var(--blue);
+      border-bottom: 2px solid var(--green);
     }
 
     a {

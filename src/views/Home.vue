@@ -1,0 +1,47 @@
+<template>
+  <div id="home-container">
+    <div id="home-info">
+      <p>Hi! You are visiting diy etf.</p>
+
+      You can use this tool to build your own ETFs on Solana. The ETF program is
+      currently deployed on <span class="cluster-highlight">devnet</span> and
+      you can use this tool to play around with it.
+
+      <p>
+        Go to
+        <a
+          href="https://www.sollet.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="wallet-highlight"
+          >sollet.io</a
+        >
+        and airdrop yourself some SOL on
+        <span class="cluster-highlight">devnet</span>. Use those funds to create
+        an ETF, buy, and redeem its shares.
+      </p>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+#home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+
+  #home-info {
+    width: 450px;
+    text-align: center;
+
+    .cluster-highlight {
+      color: var(--orange);
+    }
+
+    .wallet-highlight {
+      color: var(--blue);
+    }
+  }
+}
+</style>
