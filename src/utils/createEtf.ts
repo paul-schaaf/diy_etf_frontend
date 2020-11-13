@@ -13,7 +13,7 @@ import TOKEN_LIST from "./token-list.json";
 import { getTokenPricesInUSD } from "./tokenPriceApi";
 import { EtfComponent } from "@/utils/etf";
 import { createAccount } from "@/utils/account";
-import { getConnection } from "@/utils/connection";
+import { getConnection, chosenCluster } from "@/utils/connection";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
 
 const PROGRAM_ID = new PublicKey(
@@ -27,8 +27,16 @@ const createVaultAmounts = async (
   components: EtfComponent[],
   shareValueInUsd: number
 ) => {
-  const clusterTokens = TOKEN_LIST.localnet;
-  const coingeckoIds = components.map(component => {
+  const clusterTokens: {
+    tokenSymbol: string;
+    mintAddress: string;
+    tokenName: string;
+    icon: string;
+    decimals: number;
+    coingeckoId: string;
+    // @ts-ignore
+  }[] = TOKEN_LIST[chosenCluster.value];
+  const coingeckoIds: string[] = components.map(component => {
     return clusterTokens.filter(
       token => token.tokenSymbol === component.name
     )[0].coingeckoId;
@@ -52,13 +60,18 @@ export const createEtf = async (
   shareValueInUsd: number,
   feePayer: string
 ) => {
+  if (components.length > 30) {
+    throw new Error("Can only handle 30 tokens in one ETF at this point");
+  }
+
   const vaultAmounts = await createVaultAmounts(components, shareValueInUsd);
 
   const feePayerAccount = await createAccount(feePayer);
 
   const connection = getConnection();
 
-  const space = 300;
+  // 8 for AssetInfo, 8 for amount = 16
+  const space = components.reduce(acc => acc + 16, 300);
   const requiredLamports = await connection.getMinimumBalanceForRentExemption(
     space,
     "singleGossip"
@@ -85,21 +98,16 @@ export const createEtf = async (
     )[0];
   });
 
-  const TokenA = new Token(
-    connection,
-    new PublicKey(chosenTokens[0].mintAddress),
-    TOKEN_PROGRAM_ID,
-    feePayerAccount
+  const tokenPubkeys = await Promise.all(
+    chosenTokens.map(async token =>
+      new Token(
+        connection,
+        new PublicKey(token.mintAddress),
+        TOKEN_PROGRAM_ID,
+        feePayerAccount
+      ).createAccount(vaultAuthority[0])
+    )
   );
-  const tokenATokenAccount = await TokenA.createAccount(vaultAuthority[0]);
-
-  const TokenB = new Token(
-    connection,
-    new PublicKey(chosenTokens[1].mintAddress),
-    TOKEN_PROGRAM_ID,
-    feePayerAccount
-  );
-  const tokenBTokenAccount = await TokenB.createAccount(vaultAuthority[0]);
 
   const poolTokenMintAccount = await Token.createMint(
     connection,
@@ -114,14 +122,17 @@ export const createEtf = async (
   const ASSETS_LENGTH = 2;
   const BORSH_ETF = [3, 0, 0, 0, 101, 116, 102];
 
-  const amountTokenA = vaultAmounts[0].toArray("le", 8);
-  const amountTokenB = vaultAmounts[1].toArray("le", 8);
-
   const INITIALIZE_POOL_REQUEST = [
     VAULT_SIGNER_NONCE,
     ASSETS_LENGTH,
     ...BORSH_ETF,
-    ...[16, 0, 0, 0, ...amountTokenA, ...amountTokenB]
+    ...[
+      vaultAmounts.length * 8,
+      0,
+      0,
+      0,
+      ...vaultAmounts.flatMap(amount => amount.toArray("le", 8))
+    ]
   ];
 
   const REQUEST_INNER_INITIALIZE = [0, ...INITIALIZE_POOL_REQUEST];
@@ -134,8 +145,11 @@ export const createEtf = async (
         isSigner: false,
         isWritable: true
       },
-      { pubkey: tokenATokenAccount, isSigner: false, isWritable: true },
-      { pubkey: tokenBTokenAccount, isSigner: false, isWritable: true },
+      ...tokenPubkeys.map(pubkey => ({
+        pubkey,
+        isSigner: false,
+        isWritable: true
+      })),
       { pubkey: vaultAuthority[0], isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false }
     ],
