@@ -59,19 +59,43 @@
   ],
   "localnet": [
     {
-      "tokenSymbol": "SOL",
-      "mintAddress": "So11111111111111111111111111111111111111112",
-      "tokenName": "Solana",
+      "tokenSymbol": "TOKEN A",
+      "mintAddress": "94UKpxaeg3jwCyMCLf3RzzBJzas9GL7S9Vn5ckEWgg26",
+      "tokenName": "Token E",
       "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
-      "decimals": 9,
+      "decimals": 4,
       "coingeckoId": "solana"
     },
     {
-      "tokenSymbol": "SRM",
-      "mintAddress": "H7or9Xac43TxSdDfuQSgUgWUJQnigVEJrxCkUEfkfoCE",
-      "tokenName": "Serum",
+      "tokenSymbol": "TOKEN B",
+      "mintAddress": "8ASSWBQSgCM5GFkWpd7xdXKHr6MuvygrkGu6Ny6GdosP",
+      "tokenName": "Token B",
       "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
       "decimals": 6,
+      "coingeckoId": "serum"
+    },
+    {
+      "tokenSymbol": "TOKEN C",
+      "mintAddress": "GAohm2KzBHYTby5cS1ZXdiEiDxD1qXYdfZjxPac3vwM7",
+      "tokenName": "Token C",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
+      "decimals": 9,
+      "coingeckoId": "serum"
+    },
+    {
+      "tokenSymbol": "TOKEN D",
+      "mintAddress": "FoGofZf3CM4SuxrybCNqyWR4o7WooWK7ex2AzAjk7Jac",
+      "tokenName": "Token D",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
+      "decimals": 9,
+      "coingeckoId": "serum"
+    },
+    {
+      "tokenSymbol": "TOKEN E",
+      "mintAddress": "4SkCkENyvawTrFqLtsogm9Pcj74BLi6jJRcikZWE2mpF",
+      "tokenName": "Token E",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
+      "decimals": 2,
       "coingeckoId": "serum"
     }
   ]
