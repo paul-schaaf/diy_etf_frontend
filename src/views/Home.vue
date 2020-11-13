@@ -20,6 +20,15 @@
         <span class="cluster-highlight">devnet</span>. Use those funds to create
         an ETF, buy, and redeem its shares.
       </p>
+      <br />
+      <p>
+        The only ETFs that can currently be created are non-rebalancing and
+        thereby non-fixed-weight ETFs. While you can set the initial weights,
+        they may diverge from the initial values over time. You can for example
+        create a marketcap-weighted ETF with the exception that tokens falling
+        out of the e.g. TOP10 tokens by market cap will not be removed from the
+        ETF by the program (in its current iteration).
+      </p>
     </div>
   </div>
 </template>
