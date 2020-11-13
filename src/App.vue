@@ -24,14 +24,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { changeCluster } from "@/utils/connection";
-import { ROUTES } from "./router";
 
 export default defineComponent({
   name: "App",
   setup() {
-    changeCluster("localnet");
-
-    return { ROUTES };
+    changeCluster("devnet");
   }
 });
 </script>

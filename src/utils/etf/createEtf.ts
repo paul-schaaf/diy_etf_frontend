@@ -9,20 +9,21 @@ import {
 } from "@solana/web3.js";
 import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-import TOKEN_LIST from "./token-list.json";
-import { getTokenPricesInUSD } from "./tokenPriceApi";
-import { EtfComponent } from "@/utils/etf";
+import TOKEN_LIST from "../token-list.json";
+import { getTokenPricesInUSD } from "../tokenPriceApi";
+import { EtfComponent } from "@/utils/etf/etf";
 import { createAccount } from "@/utils/account";
 import { getConnection, chosenCluster } from "@/utils/connection";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
 
 const PROGRAM_ID = new PublicKey(
-  "Gui5kXuxyre7LwyzacJZsM99oHVUXA6AH2kAc8qMKHnb"
+  "2CbhUUUhzWawdSB5DsKJ7r22zjaeB1m1EzpvieSd6pmw"
 );
 // u64
 const POOL_REQUEST_TAG = [207, 196, 28, 205, 189, 108, 10, 34];
 
 // TODO can be made more efficient
+// TODO add external price data and backup data provider before deployment to mainnet
 const createVaultAmounts = async (
   components: EtfComponent[],
   shareValueInUsd: number
@@ -34,20 +35,19 @@ const createVaultAmounts = async (
     icon: string;
     decimals: number;
     coingeckoId: string;
-    // @ts-ignore
   }[] = TOKEN_LIST[chosenCluster.value];
-  const coingeckoIds: string[] = components.map(component => {
+  /* const coingeckoIds: string[] = components.map(component => {
     return clusterTokens.filter(
       token => token.tokenSymbol === component.name
     )[0].coingeckoId;
-  });
+  }); */
 
-  const prices = await getTokenPricesInUSD(coingeckoIds);
+  /* const prices = await getTokenPricesInUSD(coingeckoIds); */
   const vaultPartsInUsd = components.map(
     c => shareValueInUsd * (c.percentage / 100)
   );
   return components.map((c, index) => {
-    const tokenPrice = prices[coingeckoIds[index]].usd;
+    const tokenPrice = /* prices[coingeckoIds[index]].usd; */ 1;
     const tokenAmounts = (vaultPartsInUsd[index] / tokenPrice).toFixed(
       clusterTokens.filter(token => token.tokenSymbol === c.name)[0].decimals
     );
@@ -91,7 +91,7 @@ export const createEtf = async (
     PROGRAM_ID
   );
 
-  const clusterTokens = TOKEN_LIST.localnet;
+  const clusterTokens = TOKEN_LIST[chosenCluster.value];
   const chosenTokens = components.map(component => {
     return clusterTokens.filter(
       token => token.tokenSymbol === component.name

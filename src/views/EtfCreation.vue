@@ -26,17 +26,20 @@
         />
       </div>
       <div
-        v-for="(token, index) in tokens"
+        v-for="(token, index) in selectedTokens"
         :key="index"
         class="token-form-field"
       >
         <div class="token-address-form-field">
           <label :for="'token' + (index + 1)">Token {{ index + 1 }} </label>
-          <input
-            type="text"
-            :name="'token' + (index + 1)"
-            v-model="token.name"
-          />
+          <select v-model="token.name" :name="'token' + (index + 1)">
+            <option
+              v-for="(token, index) in getSelectableTokens(token.name)"
+              :key="index"
+              :value="token.name"
+              >{{ token.name }}</option
+            >
+          </select>
         </div>
         <div class="token-percentage-form-field">
           <label :for="'token' + (index + 1) + 'percentage'">%</label>
@@ -66,8 +69,10 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, reactive, ref } from "vue";
-import { EtfComponent } from "@/utils/etf";
-import { createEtf } from "@/utils/createEtf";
+import { EtfComponent } from "@/utils/etf/etf";
+import { createEtf } from "@/utils/etf/createEtf";
+import TOKENS from "@/utils/token-list.json";
+import { chosenCluster } from "@/utils/connection";
 
 export default defineComponent({
   name: "EtfCreation",
@@ -76,13 +81,26 @@ export default defineComponent({
     const feePayerSecret = ref("");
     const etfAddress = ref("");
 
-    const tokens = reactive<EtfComponent[]>([
-      { name: "SRM", percentage: 50 },
-      { name: "SOL", percentage: 50 }
-    ]);
+    const clusterTokens = TOKENS[chosenCluster.value];
+    const selectedTokens = reactive<EtfComponent[]>(
+      clusterTokens
+        .slice(0, 2)
+        .map(token => ({ name: token.tokenSymbol, percentage: 50 }))
+    );
+
+    const getSelectableTokens = (selectedTokenName: string) => {
+      return clusterTokens
+        .filter(
+          token =>
+            !selectedTokens.find(
+              t => selectedTokenName !== t.name && t.name === token.tokenSymbol
+            )
+        )
+        .map(token => ({ name: token.tokenSymbol, percentage: 50 }));
+    };
 
     const percentageSum100 = computed(
-      () => tokens.reduce((acc, c) => acc + c.percentage, 0) === 100
+      () => selectedTokens.reduce((acc, c) => acc + c.percentage, 0) === 100
     );
 
     const isCreatingEtf = ref(false);
@@ -95,7 +113,7 @@ export default defineComponent({
       isCreatingEtf.value = true;
       try {
         etfAddress.value = await createEtf(
-          tokens,
+          selectedTokens,
           shareValueInUsd.value,
           feePayerSecret.value
         );
@@ -109,7 +127,8 @@ export default defineComponent({
     return {
       shareValueInUsd,
       onCreateEtf,
-      tokens,
+      selectedTokens,
+      getSelectableTokens,
       percentageSum100,
       feePayerSecret,
       isCreatingEtf,
@@ -155,6 +174,19 @@ export default defineComponent({
       .token-address-form-field {
         width: 84%;
         margin: 0;
+        position: relative;
+
+        &::after {
+          content: "<";
+          position: absolute;
+          pointer-events: none;
+          -webkit-transform: rotate(-90deg);
+          -moz-transform: rotate(-90deg);
+          -ms-transform: rotate(-90deg);
+          transform: rotate(-90deg);
+          right: 20px;
+          top: 35px;
+        }
       }
 
       .token-percentage-form-field {
@@ -163,7 +195,18 @@ export default defineComponent({
       }
     }
 
-    input {
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+
+      &::-ms-expand {
+        display: none;
+      }
+    }
+
+    input,
+    select {
       width: 100%;
       height: 40px;
       font-size: 18px;

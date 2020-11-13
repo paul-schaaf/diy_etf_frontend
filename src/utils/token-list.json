@@ -1,4 +1,62 @@
 {
+  "mainnet-beta": [{
+    "tokenSymbol": "TOKA",
+    "mintAddress": "69AqHBpBPHxwHUnioNeeKVYh6qJHErUdoQXpEC48QRbM",
+    "tokenName": "Token A",
+    "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
+    "decimals": 4,
+    "coingeckoId": "solana"
+  }],
+  "testnet": [{
+    "tokenSymbol": "TOKA",
+    "mintAddress": "69AqHBpBPHxwHUnioNeeKVYh6qJHErUdoQXpEC48QRbM",
+    "tokenName": "Token A",
+    "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
+    "decimals": 4,
+    "coingeckoId": "solana"
+  }],
+  "devnet": [
+    {
+      "tokenSymbol": "TOKEN A",
+      "mintAddress": "69AqHBpBPHxwHUnioNeeKVYh6qJHErUdoQXpEC48QRbM",
+      "tokenName": "Token A",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
+      "decimals": 4,
+      "coingeckoId": "solana"
+    },
+    {
+      "tokenSymbol": "TOKEN B",
+      "mintAddress": "3Qa15pULo1DQDcmBEsFtyCJXKSpLNdywL5hnzsABqKVS",
+      "tokenName": "Token B",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
+      "decimals": 6,
+      "coingeckoId": "solana"
+    },
+    {
+      "tokenSymbol": "TOKEN C",
+      "mintAddress": "FjUtAFibBusbAmeJLWUGmwj6tCK62JUTT3BdpVEKRB9",
+      "tokenName": "Token C",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
+      "decimals": 9,
+      "coingeckoId": "solana"
+    },
+    {
+      "tokenSymbol": "TOKEN D",
+      "mintAddress": "6FrDV9AwHWGEsR9Vme3nK9dF3ZW3Vdqxrf79DGuhtMMb",
+      "tokenName": "Token D",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
+      "decimals": 9,
+      "coingeckoId": "solana"
+    },
+    {
+      "tokenSymbol": "TOKEN E",
+      "mintAddress": "B3YQCzZeLondBCfrPq5FvWV7smdU2pLvFyWfrHdTQXQW",
+      "tokenName": "Token E",
+      "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
+      "decimals": 2,
+      "coingeckoId": "solana"
+    }
+  ],
   "localnet": [
     {
       "tokenSymbol": "SOL",
