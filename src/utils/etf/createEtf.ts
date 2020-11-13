@@ -70,8 +70,7 @@ export const createEtf = async (
 
   const connection = getConnection();
 
-  // 8 for AssetInfo, 8 for amount = 16
-  const space = components.reduce(acc => acc + 16, 300);
+  const space = components.reduce(acc => acc + 50, 300);
   const requiredLamports = await connection.getMinimumBalanceForRentExemption(
     space,
     "singleGossip"
@@ -119,7 +118,7 @@ export const createEtf = async (
   );
 
   const VAULT_SIGNER_NONCE = vaultAuthority[1];
-  const ASSETS_LENGTH = 2;
+  const ASSETS_LENGTH = vaultAmounts.length;
   const BORSH_ETF = [3, 0, 0, 0, 101, 116, 102];
 
   const INITIALIZE_POOL_REQUEST = [
