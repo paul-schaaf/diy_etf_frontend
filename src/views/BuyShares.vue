@@ -1,5 +1,11 @@
 <template>
   <div id="buy-shares-container">
+    <div v-if="userPoolTokenAddress" id="buy-shares-success-msg">
+      Successfully bought {{ boughtShares }} share{{
+        boughtShares > 1 ? "s" : ""
+      }}! Check your wallet for this account:
+      <span>{{ userPoolTokenAddress }}</span>
+    </div>
     <div id="buy-shares-form">
       <div>
         <label for="feePayer">Fee and share payer</label>
@@ -47,6 +53,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { buyShares } from "@/utils/etf/buyShares";
 
 export default defineComponent({
   name: "BuyShares",
@@ -55,10 +62,38 @@ export default defineComponent({
     const etfAddress = ref("");
     const shares = ref(1);
     const isBuyingShares = ref(false);
+    const userPoolTokenAddress = ref("");
 
-    const onBuyShares = () => {};
+    const boughtShares = ref(0);
+    const onBuyShares = async () => {
+      boughtShares.value = 0;
+      userPoolTokenAddress.value = "";
+      isBuyingShares.value = true;
+      try {
+        userPoolTokenAddress.value = await buyShares(
+          feePayerSecret.value,
+          etfAddress.value,
+          shares.value
+        );
+      } catch (err) {
+        console.log(err);
+        alert(err);
+      }
 
-    return { feePayerSecret, etfAddress, shares, isBuyingShares, onBuyShares };
+      boughtShares.value = shares.value;
+      window.scrollTo(0, 0);
+      isBuyingShares.value = false;
+    };
+
+    return {
+      feePayerSecret,
+      etfAddress,
+      shares,
+      isBuyingShares,
+      onBuyShares,
+      userPoolTokenAddress,
+      boughtShares
+    };
   }
 });
 </script>
@@ -68,6 +103,17 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  #buy-shares-success-msg {
+    text-align: center;
+    width: 450px;
+    padding: 0px 10px 0px 10px;
+    margin-top: 50px;
+
+    span {
+      color: var(--blue);
+    }
+  }
 
   #buy-shares-form {
     display: flex;

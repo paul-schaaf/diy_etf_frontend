@@ -60,15 +60,15 @@
   "localnet": [
     {
       "tokenSymbol": "TOKEN A",
-      "mintAddress": "94UKpxaeg3jwCyMCLf3RzzBJzas9GL7S9Vn5ckEWgg26",
-      "tokenName": "Token E",
+      "mintAddress": "J4JjKKX6es3biBNQn2HhUHpRdFDsTrkTicFUkEPmDNgd",
+      "tokenName": "Token A",
       "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png",
       "decimals": 4,
       "coingeckoId": "solana"
     },
     {
       "tokenSymbol": "TOKEN B",
-      "mintAddress": "8ASSWBQSgCM5GFkWpd7xdXKHr6MuvygrkGu6Ny6GdosP",
+      "mintAddress": "Bi4K8ztykHy2VyELowbm4KmaFsNLghXPNY196C6bqrhu",
       "tokenName": "Token B",
       "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
       "decimals": 6,
@@ -76,7 +76,7 @@
     },
     {
       "tokenSymbol": "TOKEN C",
-      "mintAddress": "GAohm2KzBHYTby5cS1ZXdiEiDxD1qXYdfZjxPac3vwM7",
+      "mintAddress": "DWxDMPhN8r9265y4StEXZhX3X6o2rgG3RDvMM2NtK8vf",
       "tokenName": "Token C",
       "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
       "decimals": 9,
@@ -84,7 +84,7 @@
     },
     {
       "tokenSymbol": "TOKEN D",
-      "mintAddress": "FoGofZf3CM4SuxrybCNqyWR4o7WooWK7ex2AzAjk7Jac",
+      "mintAddress": "DDtTS2CojWjtzu4JisAn59ono9YaiLKQFmJXWJPL42rp",
       "tokenName": "Token D",
       "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
       "decimals": 9,
@@ -92,7 +92,7 @@
     },
     {
       "tokenSymbol": "TOKEN E",
-      "mintAddress": "4SkCkENyvawTrFqLtsogm9Pcj74BLi6jJRcikZWE2mpF",
+      "mintAddress": "Cgk38sPBBGD3VGLkUu1x8tZEpcxB3KsBJ3KBQtPRSVxq",
       "tokenName": "Token E",
       "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x476c5E26a75bd202a9683ffD34359C0CC15be0fF/logo.png",
       "decimals": 2,

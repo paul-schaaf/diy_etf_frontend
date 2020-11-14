@@ -15,12 +15,7 @@ import { EtfComponent } from "@/utils/etf/etf";
 import { createAccount } from "@/utils/account";
 import { getConnection, chosenCluster } from "@/utils/connection";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
-
-const PROGRAM_ID = new PublicKey(
-  "2CbhUUUhzWawdSB5DsKJ7r22zjaeB1m1EzpvieSd6pmw"
-);
-// u64
-const POOL_REQUEST_TAG = [207, 196, 28, 205, 189, 108, 10, 34];
+import { POOL_REQUEST_TAG, ETF_PROGRAM_ID } from "@/utils/etf/constants";
 
 // TODO can be made more efficient
 // TODO add external price data and backup data provider before deployment to mainnet
@@ -82,12 +77,12 @@ export const createEtf = async (
     newAccountPubkey: poolAccount.publicKey,
     lamports: requiredLamports,
     space,
-    programId: PROGRAM_ID
+    programId: ETF_PROGRAM_ID
   });
 
   const vaultAuthority = await PublicKey.findProgramAddress(
     [poolAccount.publicKey.toBuffer()],
-    PROGRAM_ID
+    ETF_PROGRAM_ID
   );
 
   const clusterTokens = TOKEN_LIST[chosenCluster.value];
@@ -152,7 +147,7 @@ export const createEtf = async (
       { pubkey: vaultAuthority[0], isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false }
     ],
-    programId: PROGRAM_ID,
+    programId: ETF_PROGRAM_ID,
     data: Buffer.from([...POOL_REQUEST_TAG, ...REQUEST_INNER_INITIALIZE])
   });
 

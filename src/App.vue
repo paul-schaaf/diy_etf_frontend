@@ -24,11 +24,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { changeCluster } from "@/utils/connection";
+import { createMasterAccount } from "@/utils/masterAcc";
 
 export default defineComponent({
   name: "App",
   setup() {
-    changeCluster("devnet");
+    changeCluster("localnet");
+    // this is a promsise but it's ok not to wait for it, would need Suspense construct otherwise
+    createMasterAccount();
   }
 });
 </script>
