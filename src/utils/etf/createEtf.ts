@@ -70,7 +70,7 @@ export const createEtf = async (
 
   const connection = getConnection();
 
-  const space = components.reduce(acc => acc + 50, 300);
+  const space = components.reduce(acc => acc + 72, 93);
   const requiredLamports = await connection.getMinimumBalanceForRentExemption(
     space,
     "singleGossip"
