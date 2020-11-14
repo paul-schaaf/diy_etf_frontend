@@ -16,10 +16,11 @@ import { createAccount } from "@/utils/account";
 import { getConnection, chosenCluster } from "@/utils/connection";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
 import { POOL_REQUEST_TAG, ETF_PROGRAM_ID } from "@/utils/etf/constants";
+import { sleep } from './sleep';
 
 // TODO can be made more efficient
 // TODO add external price data and backup data provider before deployment to mainnet
-const createVaultAmounts = async (
+const calculateVaultAmounts = async (
   components: EtfComponent[],
   shareValueInUsd: number
 ) => {
@@ -59,7 +60,7 @@ export const createEtf = async (
     throw new Error("Can only handle 30 tokens in one ETF at this point");
   }
 
-  const vaultAmounts = await createVaultAmounts(components, shareValueInUsd);
+  const vaultAmounts = await calculateVaultAmounts(components, shareValueInUsd);
 
   const feePayerAccount = await createAccount(feePayer);
 
@@ -93,15 +94,22 @@ export const createEtf = async (
   });
 
   const tokenPubkeys = await Promise.all(
-    chosenTokens.map(async token =>
-      new Token(
-        connection,
-        new PublicKey(token.mintAddress),
-        TOKEN_PROGRAM_ID,
-        feePayerAccount
-      ).createAccount(vaultAuthority[0])
+    chosenTokens.map(async (token, index) =>
+      {
+        await sleep(1 + index);
+        const pubkey = await new Token(
+          connection,
+          new PublicKey(token.mintAddress),
+          TOKEN_PROGRAM_ID,
+          feePayerAccount
+        ).createAccount(vaultAuthority[0])
+        await sleep(1);
+        return pubkey;
+      }
     )
   );
+
+  await sleep(1);
 
   const poolTokenMintAccount = await Token.createMint(
     connection,
@@ -111,6 +119,8 @@ export const createEtf = async (
     0,
     TOKEN_PROGRAM_ID
   );
+
+  await sleep(1);
 
   const VAULT_SIGNER_NONCE = vaultAuthority[1];
   const ASSETS_LENGTH = vaultAmounts.length;
