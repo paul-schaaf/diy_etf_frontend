@@ -37,7 +37,8 @@
         likely take ~1 second. Also, when buying and redeeming shares, the
         underlying tokens are currently minted out of thin air. On mainnet, the
         program will buy them for the user and give the user the option whether
-        he wants all the shares or a specific currency when redeeming shares.
+        he wants all the tokens or a specific one (which the others will be
+        traded for) when redeeming shares.
       </p>
       <br />
       <p class="cyan">ETFs</p>
