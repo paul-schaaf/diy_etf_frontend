@@ -6,9 +6,9 @@
     |
     <span><router-link to="/buy-shares">Buy Shares</router-link></span>
     |
-    <span>Redeem Shares</span>
-    |
-    <span>Inspect</span>
+    <span><router-link to="/redeem-shares">Redeem Shares</router-link></span>
+    <!--   |
+    <span>Inspect</span> -->
   </div>
   <div id="etf-heading">
     <span id="d">d</span>
@@ -18,7 +18,11 @@
     <span id="t">t</span>
     <span id="f">f</span>
   </div>
-  <router-view />
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
 </template>
 
 <script lang="ts">
@@ -29,7 +33,7 @@ import { createMasterAccount } from "@/utils/masterAcc";
 export default defineComponent({
   name: "App",
   setup() {
-    changeCluster("localnet");
+    changeCluster("devnet");
     // this is a promsise but it's ok not to wait for it, would need Suspense construct otherwise
     createMasterAccount();
   }
@@ -76,15 +80,15 @@ body {
     }
 
     &:nth-child(2) a.router-link-active {
-      border-bottom: 2px solid var(--orange);
-    }
-
-    &:nth-child(3) a.router-link-active {
       border-bottom: 2px solid var(--yellow);
     }
 
-    &:nth-child(4) a.router-link-active {
+    &:nth-child(3) a.router-link-active {
       border-bottom: 2px solid var(--green);
+    }
+
+    &:nth-child(4) a.router-link-active {
+      border-bottom: 2px solid var(--blue);
     }
 
     a {

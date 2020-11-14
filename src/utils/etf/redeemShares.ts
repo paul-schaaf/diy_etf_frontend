@@ -9,50 +9,40 @@ import {
 import BN from "bn.js";
 
 import { decodePoolState, PoolState } from "@project-serum/pool";
-import { Token, TOKEN_PROGRAM_ID, u64 } from "@solana/spl-token";
+import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { createAccount } from "@/utils/account";
-import { getMasterAccount } from "@/utils/masterAcc";
 import { POOL_REQUEST_TAG, ETF_PROGRAM_ID } from "@/utils/etf/constants";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
 
 const createTempUserTokenAccountPubkeys = async (
   poolState: PoolState,
   connection: Connection,
-  userAccount: Account,
-  shareAmount: number,
-  masterAcc: Account
+  userAccount: Account
 ) =>
   await Promise.all(
-    poolState.assets.map(async (asset, index) => {
+    poolState.assets.map(async asset => {
       const tokenMint = new Token(
         connection,
         asset.mint,
         TOKEN_PROGRAM_ID,
         userAccount
       );
-      const amountBuffer = poolState.customState.slice(
-        index * 8,
-        (index + 1) * 8
-      );
-      const userTokenAccountPubkey = await tokenMint.createAccount(
-        userAccount.publicKey
-      );
-      // +shareAmount cause it's otherwise somehow not a number
-      const amountInBinary = new BN(amountBuffer, undefined, "le")
-        .muln(+shareAmount)
-        .toString(10);
-      const amount = new u64(amountInBinary, 10, "be");
-      await tokenMint.mintTo(userTokenAccountPubkey, masterAcc, [], amount);
-      return userTokenAccountPubkey;
+      return await tokenMint.createAccount(userAccount.publicKey);
     })
   );
 
-export const buyShares = async (
+export const redeemShares = async (
   userSecret: string,
   etfAddress: string,
-  shareAmount: number
+  shareAmount: number,
+  userPoolTokenAccPubkeyString: string
 ) => {
-  if (!userSecret || !etfAddress || !shareAmount) {
+  if (
+    !userSecret ||
+    !etfAddress ||
+    !shareAmount ||
+    !userPoolTokenAccPubkeyString
+  ) {
     throw new Error("Invalid input");
   }
   const etfPubkey = new PublicKey(etfAddress);
@@ -65,29 +55,17 @@ export const buyShares = async (
 
   const userAccount = await createAccount(userSecret);
 
-  const poolTokenMint = new Token(
-    connection,
-    poolState.poolTokenMint,
-    TOKEN_PROGRAM_ID,
-    userAccount
-  );
-  const userPoolTokenAccPubkey = await poolTokenMint.createAccount(
-    userAccount.publicKey
-  );
-
-  const masterAcc = getMasterAccount();
+  const userPoolTokenAccPubkey = new PublicKey(userPoolTokenAccPubkeyString);
 
   const userTokenAccountPubkeys = await createTempUserTokenAccountPubkeys(
     poolState,
     connection,
-    userAccount,
-    shareAmount,
-    masterAcc
+    userAccount
   );
 
-  const REQUEST_INNER_CREATE = [
+  const REQUEST_INNER_REDEEM = [
     2,
-    0,
+    1,
     ...new BN(shareAmount, 10).toArray("le", 8)
   ];
 
@@ -96,7 +74,7 @@ export const buyShares = async (
     ETF_PROGRAM_ID
   );
 
-  const buySharesIx = new TransactionInstruction({
+  const redeemSharesIx = new TransactionInstruction({
     keys: [
       {
         pubkey: etfPubkey,
@@ -104,7 +82,7 @@ export const buyShares = async (
         isWritable: true
       },
       {
-        pubkey: poolTokenMint.publicKey,
+        pubkey: poolState.poolTokenMint,
         isSigner: false,
         isWritable: true
       },
@@ -132,32 +110,12 @@ export const buyShares = async (
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }
     ],
     programId: ETF_PROGRAM_ID,
-    data: Buffer.from([...POOL_REQUEST_TAG, ...REQUEST_INNER_CREATE])
+    data: Buffer.from([...POOL_REQUEST_TAG, ...REQUEST_INNER_REDEEM])
   });
 
   await sendAndConfirmTransaction(
     connection,
-    new Transaction().add(buySharesIx),
+    new Transaction().add(redeemSharesIx),
     userAccount
   );
-
-  await Promise.all(
-    poolState.assets.map((asset, index) => {
-      const tokenMint = new Token(
-        connection,
-        asset.mint,
-        TOKEN_PROGRAM_ID,
-        userAccount
-      );
-
-      return tokenMint.closeAccount(
-        userTokenAccountPubkeys[index],
-        userAccount.publicKey,
-        userAccount,
-        []
-      );
-    })
-  );
-
-  return userPoolTokenAccPubkey.toBase58();
 };

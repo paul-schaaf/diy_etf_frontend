@@ -1,16 +1,13 @@
 <template>
-  <div id="buy-shares-container">
-    <div v-if="userPoolTokenAddress" id="buy-shares-success-msg">
-      Successfully bought {{ boughtShares }} share{{
-        boughtShares > 1 ? "s" : ""
+  <div id="redeem-shares-container">
+    <div v-if="redeemedETFAddress" id="redeem-shares-success-msg">
+      Successfully redeemed {{ redeemedShares }} share{{
+        redeemedShares > 1 ? "s" : ""
       }}
-      of ETF: {{ boughtETFAddress }}
-      <p>
-        Check your wallet for this account:
-        <span>{{ userPoolTokenAddress }}</span>
-      </p>
+      of ETF: {{ redeemedETFAddress }}
+      <p>Check your wallet for the received tokens!</p>
     </div>
-    <div id="buy-shares-form">
+    <div id="redeem-shares-form">
       <div>
         <label for="feePayer">Fee and share payer</label>
         <input
@@ -30,7 +27,18 @@
         />
       </div>
       <div>
-        <label for="shares">Amount of ETF shares to buy</label>
+        <label for="userPoolTokenAccountAddress"
+          >The token account address of your pool tokens</label
+        >
+        <input
+          v-model="userPoolTokenAccountAddress"
+          type="text"
+          name="userPoolTokenAccountAddress"
+          placeholder="token account address..."
+        />
+      </div>
+      <div>
+        <label for="shares">Amount of ETF shares to redeem</label>
         <input
           v-model="shares"
           type="number"
@@ -39,14 +47,14 @@
           min="1"
         />
       </div>
-      <div id="buy-shares-form-submit-container">
+      <div id="redeem-shares-form-submit-container">
         <div id="gradient-wrapper">
           <div>
             <input
-              :disabled="isBuyingShares"
-              :value="isBuyingShares ? 'loading...' : 'buy shares'"
+              :disabled="isRedeemingShares"
+              :value="isRedeemingShares ? 'loading...' : 'redeem shares'"
               type="submit"
-              @click="onBuyShares"
+              @click="onRedeemShares"
             />
           </div>
         </div>
@@ -57,64 +65,64 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { buyShares } from "@/utils/etf/buyShares";
+import { redeemShares } from "@/utils/etf/redeemShares";
 
 export default defineComponent({
-  name: "BuyShares",
+  name: "RedeemShares",
   setup() {
     const feePayerSecret = ref("");
     const etfAddress = ref("");
     const shares = ref(1);
-    const isBuyingShares = ref(false);
-    const userPoolTokenAddress = ref("");
+    const userPoolTokenAccountAddress = ref("");
+    const isRedeemingShares = ref(false);
 
-    const boughtShares = ref(0);
-    const boughtETFAddress = ref("");
-    const onBuyShares = async () => {
-      boughtShares.value = 0;
-      boughtETFAddress.value = "";
-      userPoolTokenAddress.value = "";
-      isBuyingShares.value = true;
+    const redeemedShares = ref(0);
+    const redeemedETFAddress = ref("");
+    const onRedeemShares = async () => {
+      redeemedShares.value = 0;
+      redeemedETFAddress.value = "";
+      isRedeemingShares.value = true;
       const etfAddressStatic = etfAddress.value;
       const etfSharesStatic = shares.value;
       try {
-        userPoolTokenAddress.value = await buyShares(
+        await redeemShares(
           feePayerSecret.value,
           etfAddress.value,
-          shares.value
+          shares.value,
+          userPoolTokenAccountAddress.value
         );
-        boughtShares.value = etfSharesStatic;
-        boughtETFAddress.value = etfAddressStatic;
+        redeemedShares.value = etfSharesStatic;
+        redeemedETFAddress.value = etfAddressStatic;
       } catch (err) {
         console.log(err);
         alert(err);
       }
 
       window.scrollTo(0, 0);
-      isBuyingShares.value = false;
+      isRedeemingShares.value = false;
     };
 
     return {
       feePayerSecret,
       etfAddress,
       shares,
-      isBuyingShares,
-      onBuyShares,
-      userPoolTokenAddress,
-      boughtShares,
-      boughtETFAddress
+      isRedeemingShares,
+      onRedeemShares,
+      redeemedShares,
+      redeemedETFAddress,
+      userPoolTokenAccountAddress
     };
   }
 });
 </script>
 
 <style lang="scss" scoped>
-#buy-shares-container {
+#redeem-shares-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  #buy-shares-success-msg {
+  #redeem-shares-success-msg {
     text-align: center;
     width: 450px;
     padding: 0px 10px 0px 10px;
@@ -125,7 +133,7 @@ export default defineComponent({
     }
   }
 
-  #buy-shares-form {
+  #redeem-shares-form {
     display: flex;
     flex-direction: column;
     width: 450px;
