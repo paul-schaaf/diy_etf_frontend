@@ -3,8 +3,12 @@
     <div v-if="userPoolTokenAddress" id="buy-shares-success-msg">
       Successfully bought {{ boughtShares }} share{{
         boughtShares > 1 ? "s" : ""
-      }}! Check your wallet for this account:
-      <span>{{ userPoolTokenAddress }}</span>
+      }}
+      of ETF: {{ boughtETFAddress }}
+      <p>
+        Check your wallet for this account:
+        <span>{{ userPoolTokenAddress }}</span>
+      </p>
     </div>
     <div id="buy-shares-form">
       <div>
@@ -65,10 +69,14 @@ export default defineComponent({
     const userPoolTokenAddress = ref("");
 
     const boughtShares = ref(0);
+    const boughtETFAddress = ref("");
     const onBuyShares = async () => {
       boughtShares.value = 0;
+      boughtETFAddress.value = "";
       userPoolTokenAddress.value = "";
       isBuyingShares.value = true;
+      const etfAddressStatic = etfAddress.value;
+      const etfSharesStatic = shares.value;
       try {
         userPoolTokenAddress.value = await buyShares(
           feePayerSecret.value,
@@ -80,7 +88,8 @@ export default defineComponent({
         alert(err);
       }
 
-      boughtShares.value = shares.value;
+      boughtShares.value = etfSharesStatic;
+      boughtETFAddress.value = etfAddressStatic;
       window.scrollTo(0, 0);
       isBuyingShares.value = false;
     };
@@ -92,7 +101,8 @@ export default defineComponent({
       isBuyingShares,
       onBuyShares,
       userPoolTokenAddress,
-      boughtShares
+      boughtShares,
+      boughtETFAddress
     };
   }
 });
