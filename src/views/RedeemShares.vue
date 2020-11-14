@@ -5,7 +5,7 @@
         redeemedShares > 1 ? "s" : ""
       }}
       of ETF: {{ redeemedETFAddress }}
-      <p>Check your wallet for the received tokens!</p>
+      <p><span>Check your wallet for the received tokens!</span></p>
     </div>
     <div id="redeem-shares-form">
       <div>
