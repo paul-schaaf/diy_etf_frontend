@@ -14,6 +14,7 @@ import { createAccount } from "@/utils/account";
 import { getMasterAccount } from "@/utils/masterAcc";
 import { POOL_REQUEST_TAG, ETF_PROGRAM_ID } from "@/utils/etf/constants";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
+import { sleep } from './sleep';
 
 const createTempUserTokenAccountPubkeys = async (
   poolState: PoolState,
@@ -34,6 +35,7 @@ const createTempUserTokenAccountPubkeys = async (
         index * 8,
         (index + 1) * 8
       );
+      await sleep(1.5 + index);
       const userTokenAccountPubkey = await tokenMint.createAccount(
         userAccount.publicKey
       );
@@ -41,6 +43,7 @@ const createTempUserTokenAccountPubkeys = async (
       const amountInBinary = new BN(amountBuffer, undefined, "le")
         .muln(+shareAmount)
         .toString(10);
+      await sleep(1.5 + index);
       const amount = new u64(amountInBinary, 10, "be");
       await tokenMint.mintTo(userTokenAccountPubkey, masterAcc, [], amount);
       return userTokenAccountPubkey;
@@ -71,6 +74,9 @@ export const buyShares = async (
     TOKEN_PROGRAM_ID,
     userAccount
   );
+
+  await sleep(1);
+
   const userPoolTokenAccPubkey = await poolTokenMint.createAccount(
     userAccount.publicKey
   );
@@ -84,6 +90,8 @@ export const buyShares = async (
     shareAmount,
     masterAcc
   );
+
+  await sleep(1);
 
   const REQUEST_INNER_CREATE = [
     2,

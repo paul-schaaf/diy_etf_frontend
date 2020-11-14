@@ -97,14 +97,12 @@ export const createEtf = async (
     chosenTokens.map(async (token, index) =>
       {
         await sleep(1 + index);
-        const pubkey = await new Token(
+        return await new Token(
           connection,
           new PublicKey(token.mintAddress),
           TOKEN_PROGRAM_ID,
           feePayerAccount
         ).createAccount(vaultAuthority[0])
-        await sleep(1);
-        return pubkey;
       }
     )
   );

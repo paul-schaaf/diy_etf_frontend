@@ -13,6 +13,7 @@ import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { createAccount } from "@/utils/account";
 import { POOL_REQUEST_TAG, ETF_PROGRAM_ID } from "@/utils/etf/constants";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
+import { sleep } from './sleep';
 
 const createTempUserTokenAccountPubkeys = async (
   poolState: PoolState,
@@ -20,13 +21,14 @@ const createTempUserTokenAccountPubkeys = async (
   userAccount: Account
 ) =>
   await Promise.all(
-    poolState.assets.map(async asset => {
+    poolState.assets.map(async (asset, index) => {
       const tokenMint = new Token(
         connection,
         asset.mint,
         TOKEN_PROGRAM_ID,
         userAccount
       );
+      await sleep(1.5 + index);
       return await tokenMint.createAccount(userAccount.publicKey);
     })
   );
@@ -73,6 +75,8 @@ export const redeemShares = async (
     [etfPubkey.toBuffer()],
     ETF_PROGRAM_ID
   );
+
+  await sleep(1.5);
 
   const redeemSharesIx = new TransactionInstruction({
     keys: [
