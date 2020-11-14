@@ -13,7 +13,7 @@ import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { createAccount } from "@/utils/account";
 import { POOL_REQUEST_TAG, ETF_PROGRAM_ID } from "@/utils/etf/constants";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
-import { sleep } from './sleep';
+import { sleep } from "./sleep";
 
 const createTempUserTokenAccountPubkeys = async (
   poolState: PoolState,

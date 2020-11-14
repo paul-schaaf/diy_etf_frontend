@@ -16,7 +16,7 @@ import { createAccount } from "@/utils/account";
 import { getConnection, chosenCluster } from "@/utils/connection";
 import { sendAndConfirmTransaction } from "@/utils/sendAndConfirmTx";
 import { POOL_REQUEST_TAG, ETF_PROGRAM_ID } from "@/utils/etf/constants";
-import { sleep } from './sleep';
+import { sleep } from "./sleep";
 
 // TODO can be made more efficient
 // TODO add external price data and backup data provider before deployment to mainnet
@@ -94,17 +94,15 @@ export const createEtf = async (
   });
 
   const tokenPubkeys = await Promise.all(
-    chosenTokens.map(async (token, index) =>
-      {
-        await sleep(1 + index);
-        return await new Token(
-          connection,
-          new PublicKey(token.mintAddress),
-          TOKEN_PROGRAM_ID,
-          feePayerAccount
-        ).createAccount(vaultAuthority[0])
-      }
-    )
+    chosenTokens.map(async (token, index) => {
+      await sleep(1 + index);
+      return await new Token(
+        connection,
+        new PublicKey(token.mintAddress),
+        TOKEN_PROGRAM_ID,
+        feePayerAccount
+      ).createAccount(vaultAuthority[0]);
+    })
   );
 
   await sleep(1);
